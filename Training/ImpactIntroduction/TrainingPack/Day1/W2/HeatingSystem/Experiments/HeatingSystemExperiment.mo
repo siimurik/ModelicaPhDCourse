@@ -1,0 +1,32 @@
+within TrainingPack.Day1.W2.HeatingSystem.Experiments;
+model HeatingSystemExperiment
+    .TrainingPack.Day1.W2.HeatingSystem.Components.Tank tank(nPorts = 2,redeclare replaceable package Medium = .Modelica.Media.Water.StandardWater) annotation(Placement(transformation(extent = {{-114.0,38.0},{-74.0,78.0}},origin = {0.0,0.0},rotation = 0.0)));
+    .TrainingPack.Day1.W2.HeatingSystem.Components.Pump pump(redeclare replaceable package Medium = Modelica.Media.Water.StandardWater) annotation(Placement(transformation(extent = {{-74.0,-12.0},{-54.0,8.0}},origin = {0.0,0.0},rotation = 0.0)));
+    .TrainingPack.Day1.W2.HeatingSystem.Components.Heater heater(redeclare replaceable package Medium = Modelica.Media.Water.StandardWater) annotation(Placement(transformation(extent = {{10.0,-12.0},{30.0,8.0}},origin = {0.0,0.0},rotation = 0.0)));
+    .TrainingPack.Day1.W2.HeatingSystem.Components.Pipe pipe(redeclare replaceable package Medium = Modelica.Media.Water.StandardWater) annotation(Placement(transformation(extent = {{-10.0,-10.0},{10.0,10.0}},origin = {74.0,-38.0},rotation = -90.0)));
+    .TrainingPack.Day1.W2.HeatingSystem.Components.Valve valve(redeclare replaceable package Medium = Modelica.Media.Water.StandardWater) annotation(Placement(transformation(extent = {{60.0,-96.0},{40.0,-76.0}},origin = {0.0,0.0},rotation = 0.0)));
+    .TrainingPack.Day1.W2.HeatingSystem.Components.Radiator radiator(redeclare replaceable package Medium = Modelica.Media.Water.StandardWater) annotation(Placement(transformation(extent = {{2.0,-94.0},{-18.0,-74.0}},origin = {0.0,0.0},rotation = 0.0)));
+    .TrainingPack.Day1.W2.HeatingSystem.Components.Wall wall annotation(Placement(transformation(extent = {{-10.0,-10.0},{10.0,10.0}},origin = {-8.0,-58.0},rotation = -90.0)));
+    inner .Modelica.Fluid.System system(energyDynamics = Modelica.Fluid.Types.Dynamics.SteadyStateInitial,m_flow_small = 0.0001) annotation(Placement(transformation(extent = {{-96.0,116.0},{-76.0,136.0}},origin = {0.0,0.0},rotation = 0.0)));
+    .Modelica.Fluid.Sensors.Temperature sensor_T_forward(redeclare replaceable package Medium = Modelica.Media.Water.StandardWater) annotation(Placement(transformation(extent = {{34.0,28.0},{54.0,48.0}},origin = {0.0,0.0},rotation = 0.0)));
+    .Modelica.Fluid.Sensors.Temperature sensor_T_return(redeclare replaceable package Medium = Modelica.Media.Water.StandardWater) annotation(Placement(transformation(extent = {{-78.0,-64.0},{-58.0,-44.0}},origin = {0.0,0.0},rotation = 0.0)));
+    .Modelica.Fluid.Sensors.MassFlowRate sensor_m_flow(redeclare replaceable package Medium = Modelica.Media.Water.StandardWater) annotation(Placement(transformation(extent = {{-32.0,-12.0},{-12.0,8.0}},origin = {0.0,0.0},rotation = 0.0)));
+    .Modelica.Thermal.HeatTransfer.Sources.FixedHeatFlow burner(Q_flow = 1600,T_ref = 343.15,alpha = -0.5) annotation(Placement(transformation(extent = {{-10.0,18.0},{10.0,38.0}},origin = {0.0,0.0},rotation = 0.0)));
+    .Modelica.Thermal.HeatTransfer.Sources.FixedTemperature T_ambient(T = system.T_ambient) annotation(Placement(transformation(extent = {{-50.0,-46.0},{-30.0,-26.0}},origin = {0.0,0.0},rotation = 0.0)));
+    .Modelica.Blocks.Sources.Step valve_handle(height = 0.9,offset = 0.1,startTime = 2000) annotation(Placement(transformation(extent = {{16,-50},{36,-30}},origin = {0,0},rotation = 0)));
+equation
+    connect(tank.ports[1],pump.port_a) annotation(Line(points = {{-94,38},{-94,-2},{-74,-2}},color = {0,127,255}));
+    connect(heater.port_b,pipe.port_a) annotation(Line(points = {{30,-2},{74,-2},{74,-28}},color = {0,127,255}));
+    connect(wall.port_b,radiator.heatPorts[1]) annotation(Line(points = {{-8,-68},{-8.1,-68},{-8.1,-79.6}},color = {191,0,0}));
+    connect(radiator.port_b,tank.ports[2]) annotation(Line(points = {{-18,-84},{-94,-84},{-94,38}},color = {0,127,255}));
+    connect(sensor_T_forward.port,heater.port_b) annotation(Line(points = {{44,28},{44,-2},{30,-2}},color = {0,127,255}));
+    connect(sensor_T_return.port,radiator.port_b) annotation(Line(points = {{-68,-64},{-68,-84},{-18,-84}},color = {0,127,255}));
+    connect(pump.port_b,sensor_m_flow.port_a) annotation(Line(points = {{-54,-2},{-32,-2}},color = {0,127,255}));
+    connect(sensor_m_flow.port_b,heater.port_a) annotation(Line(points = {{-12,-2},{10,-2}},color = {0,127,255}));
+    connect(burner.port,heater.heatPorts[1]) annotation(Line(points = {{10,28},{20.1,28},{20.1,2.4}},color = {191,0,0}));
+    connect(T_ambient.port,wall.port_a) annotation(Line(points = {{-30,-36},{-8,-36},{-8,-48}},color = {191,0,0}));
+    connect(valve_handle.y,valve.opening) annotation(Line(points = {{37,-40},{43,-40},{43,-68},{50,-68},{50,-78}},color = {0,0,127}));
+    connect(radiator.port_a,valve.port_b) annotation(Line(points = {{2,-84},{29,-84},{29,-86},{40,-86}},color = {0,127,255}));
+    connect(pipe.port_b,valve.port_a) annotation(Line(points = {{74,-48},{74,-54},{82,-54},{82,-86},{60,-86}},color = {0,127,255}));
+    annotation(Icon(coordinateSystem(preserveAspectRatio = false,extent = {{-100.0,-100.0},{100.0,100.0}}),graphics = {Rectangle(lineColor={0,0,0},fillColor={230,230,230},fillPattern=FillPattern.Solid,extent={{-100.0,-100.0},{100.0,100.0}}),Text(lineColor={0,0,255},extent={{-150,150},{150,110}},textString="%name")}));
+end HeatingSystemExperiment;
