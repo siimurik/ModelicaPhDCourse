@@ -1,0 +1,44 @@
+within TrainingPack.Day2.CoolingSystem.Experiments;
+
+model Experiment3
+    .Modelica.Blocks.Sources.Constant latGai(k = 0) annotation(Placement(transformation(extent = {{4.4,30.9},{24.4,50.9}},origin = {0.0,0.0},rotation = 0.0)));
+    .Buildings.BoundaryConditions.WeatherData.ReaderTMY3 weaDat(filNam = .Modelica.Utilities.Files.loadResource("modelica://Buildings/Resources/weatherdata/USA_IL_Chicago-OHare.Intl.AP.725300_TMY3.mos")) annotation(Placement(transformation(extent = {{-96.71,70.3},{-76.71,90.3}},origin = {0.0,0.0},rotation = 0.0)));
+    .Modelica.Blocks.Sources.Constant senGai(k = 480) annotation(Placement(transformation(extent = {{-1.61,66.01},{18.39,86.01}},origin = {0.0,0.0},rotation = 0.0)));
+    .Buildings.Fluid.Movers.FlowControlled_m_flow fan(redeclare package Medium = Buildings.Media.Air,addPowerToMedium = false,m_flow_nominal = 0.1,nominalValuesDefineDefaultPressureCurve = false) annotation(Placement(transformation(extent = {{-43.83,-8.17},{-23.83,11.83}},origin = {0.0,0.0},rotation = 0.0)));
+    .Modelica.Blocks.Sources.Constant airFlow(k = 0.15) annotation(Placement(transformation(extent = {{-56.33,32.81},{-36.33,52.81}},origin = {0.0,0.0},rotation = 0.0)));
+    .Buildings.Fluid.Sources.Outside out(nPorts = 2,redeclare package Medium = Buildings.Media.Air) annotation(Placement(transformation(extent = {{-82.85,-14.3},{-62.85,5.7}},origin = {0.0,0.0},rotation = 0.0)));
+    .Modelica.Blocks.Sources.Constant supWatTem(k = 273.15 + 7) annotation(Placement(transformation(extent = {{-82.54,-87.43},{-62.54,-67.43}},origin = {0.0,0.0},rotation = 0.0)));
+    .Buildings.Fluid.HeatExchangers.SensibleCooler_T coolMachine(redeclare package Medium = Buildings.Media.Water,QMin_flow = -2800,m_flow_nominal = 0.15,dp_nominal = 0) annotation(Placement(transformation(extent = {{16.26,-79.18},{36.26,-59.18}},origin = {0.0,0.0},rotation = 0.0)));
+    .Buildings.Controls.Continuous.LimPID conPID(k = 0.1,Ti = 120,yMax = 2,reverseActing = false) annotation(Placement(transformation(extent = {{-63.11,-49.27},{-43.11,-29.27}},origin = {0.0,0.0},rotation = 0.0)));
+    .Buildings.Fluid.Sensors.TemperatureTwoPort senTem(redeclare package Medium = Buildings.Media.Water,m_flow_nominal = 0.15) annotation(Placement(transformation(extent = {{10.0,-10.0},{-10.0,10.0}},origin = {-19.31,-24.909999999999997},rotation = 90.0)));
+    .Buildings.Fluid.Sensors.TemperatureTwoPort senTem2(redeclare package Medium = Buildings.Media.Air,m_flow_nominal = 0.15) annotation(Placement(transformation(extent = {{15.42,-7.98},{35.42,12.02}},origin = {0.0,0.0},rotation = 0.0)));
+    .Buildings.Fluid.HeatExchangers.ConstantEffectiveness coolCoil(redeclare package Medium1 = Buildings.Media.Air,redeclare package Medium2 = Buildings.Media.Water,m1_flow_nominal = 0.15,m2_flow_nominal = 0.15,dp1_nominal = 0.0,dp2_nominal = 0.0) annotation(Placement(transformation(extent = {{-12.39,-14.05},{7.61,5.95}},origin = {0.0,0.0},rotation = 0.0)));
+    .Buildings.Fluid.Movers.FlowControlled_m_flow pump(redeclare package Medium = Buildings.Media.Water,addPowerToMedium = false,m_flow_nominal = 0.15,nominalValuesDefineDefaultPressureCurve = true) annotation(Placement(transformation(extent = {{10.0,-10.0},{-10.0,10.0}},origin = {-19.33,-53.58},rotation = 90.0)));
+    .Buildings.Fluid.Sources.Boundary_pT bou(nPorts = 1,redeclare package Medium = Buildings.Media.Water) annotation(Placement(transformation(extent = {{81.64,-50.21},{61.64,-30.21}},origin = {0.0,0.0},rotation = 0.0)));
+    .Modelica.Blocks.Continuous.Integrator coolEnergy(k = -1 / 3600000) annotation(Placement(transformation(extent = {{61.24,-82.47},{81.24,-62.47}},origin = {0.0,0.0},rotation = 0.0)));
+    .Modelica.Blocks.Sources.CombiTimeTable setPointAir(table = [0,273.15 + 25],extrapolation = Modelica.Blocks.Types.Extrapolation.HoldLastPoint,smoothness = Modelica.Blocks.Types.Smoothness.ConstantSegments) annotation(Placement(transformation(extent = {{-98.5,-47.85},{-78.5,-27.85}},origin = {0.0,0.0},rotation = 0.0)));
+    .Buildings.ThermalZones.ISO13790.Zone5R1C.ZoneHVAC zonHVAC(AFlo = 48,VRoo = 129.6,surAzi = {3.14159265358978999667,-1.57079632679489499834,0,1.57079632679489499834},redeclare replaceable .Buildings.ThermalZones.ISO13790.Data.Medium buiMas,airRat = 0.4,UWal = 0.2,URoo = 0.15,UFlo = 0.1,gFac = 0.6,UWin = 1.8,AWin = {0,0,10,0},winFra = 0.01,redeclare package Medium = Buildings.Media.Air,nPorts = 2,ARoo = 48,AWal = {21.6,16.2,11.6,16.2},surTil = {1.57079632679489499834,1.57079632679489499834,1.57079632679489499834,1.57079632679489499834}) annotation(Placement(transformation(extent = {{54.86,-11.84},{82.86,16.16}},origin = {0,0},rotation = 0)));
+equation
+    connect(weaDat.weaBus,out.weaBus) annotation(Line(points = {{-76.71,80.3},{-65.85,80.3},{-65.85,32.13},{-88.63,32.13},{-88.63,-4.1},{-82.85,-4.1}},color = {255,204,51}));
+    connect(airFlow.y,fan.m_flow_in) annotation(Line(points = {{-35.33,42.81},{-33.83,42.81},{-33.83,13.83}},color = {0,0,127}));
+    connect(out.ports[1],fan.port_a) annotation(Line(points = {{-62.85,-4.3},{-62.85,1.83},{-43.83,1.83}},color = {0,127,255}));
+    connect(senTem.port_b,pump.port_a) annotation(Line(points = {{-19.31,-34.91},{-19.31,-39.245},{-19.33,-39.245},{-19.33,-43.58}},color = {0,127,255}));
+    connect(coolMachine.port_a,pump.port_b) annotation(Line(points = {{16.26,-69.18},{10.26,-69.18},{10.26,-80.08},{-19.33,-80.08},{-19.33,-63.58}},color = {0,127,255}));
+    connect(coolMachine.Q_flow,coolEnergy.u) annotation(Line(points = {{37.26,-61.18},{48.25,-61.18},{48.25,-72.47},{59.24,-72.47}},color = {0,0,127}));
+    connect(fan.port_b,coolCoil.port_a1) annotation(Line(points = {{-23.83,1.83},{-17.22,1.83},{-17.22,1.95},{-12.39,1.95}},color = {0,127,255}));
+    connect(coolCoil.port_b1,senTem2.port_a) annotation(Line(points = {{7.61,1.95},{11.73,1.95},{11.73,2.02},{15.42,2.02}},color = {0,127,255}));
+    connect(coolCoil.port_b2,senTem.port_a) annotation(Line(points = {{-12.39,-10.05},{-19.31,-10.05},{-19.31,-14.91}},color = {0,127,255}));
+    connect(coolMachine.TSet,supWatTem.y) annotation(Line(points = {{14.26,-61.18},{0.79,-61.18},{0.79,-71.94},{-57.68,-71.94},{-57.68,-77.43},{-61.54,-77.43}},color = {0,0,127}));
+    connect(conPID.y,pump.m_flow_in) annotation(Line(points = {{-42.11,-39.27},{-36.72,-39.27},{-36.72,-53.58},{-31.33,-53.58}},color = {0,0,127}));
+    connect(setPointAir.y[1],conPID.u_s) annotation(Line(points = {{-77.5,-37.85},{-71.98,-37.85},{-71.98,-39.27},{-65.11,-39.27}},color = {0,0,127}));
+    connect(coolMachine.port_b,coolCoil.port_a2) annotation(Line(points = {{36.26,-69.18},{42.26,-69.18},{42.26,-10.05},{7.61,-10.05}},color = {0,127,255}));
+    connect(bou.ports[1],coolMachine.port_b) annotation(Line(points = {{61.64,-40.21},{48.76,-40.21},{48.76,-69.18},{36.26,-69.18}},color = {0,127,255}));
+    connect(zonHVAC.heaPorSur,zonHVAC.heaPorAir) annotation(Line(points = {{72.86,2.16},{78.86,2.16},{78.86,16.16},{72.86,16.16},{72.86,10.16}},color = {191,0,0}));
+    connect(weaDat.weaBus,zonHVAC.weaBus) annotation(Line(points = {{-76.71,80.3},{-60.92,80.3},{-60.92,96.94},{78.86,96.94},{78.86,13.16}},color = {255,204,51}));
+    connect(zonHVAC.TAir,conPID.u_m) annotation(Line(points = {{83.86,10.16},{89.86,10.16},{89.86,-92.82},{-91.81,-92.82},{-91.81,-60.44},{-53.11,-60.44},{-53.11,-51.27}},color = {0,0,127}));
+    connect(latGai.y,zonHVAC.intLatGai) annotation(Line(points = {{25.4,40.9},{39.129999999999995,40.9},{39.129999999999995,6.16},{52.86,6.16}},color = {0,0,127}));
+    connect(senGai.y,zonHVAC.intSenGai) annotation(Line(points = {{19.39,76.01},{44.62,76.01},{44.62,12.16},{52.86,12.16}},color = {0,0,127}));
+    connect(senTem2.port_b,zonHVAC.ports[1]) annotation(Line(points = {{35.42,2.02},{45.64,2.02},{45.64,-6.04},{55.86,-6.04}},color = {0,127,255}));
+    connect(out.ports[2],zonHVAC.ports[2]) annotation(Line(points = {{-62.85,-4.3},{-62.85,-11.81},{-46.7,-11.81},{-46.7,-18.54},{49.23,-18.54},{49.23,-6.04},{55.86,-6.04}},color = {0,127,255}));
+    annotation(Icon(coordinateSystem(preserveAspectRatio = false,extent = {{-100.0,-100.0},{100.0,100.0}}),graphics = {Rectangle(lineColor={0,0,0},fillColor={230,230,230},fillPattern=FillPattern.Solid,extent={{-100.0,-100.0},{100.0,100.0}}),Text(lineColor={0,0,255},extent={{-150,150},{150,110}},textString="%name")}));
+end Experiment3;
