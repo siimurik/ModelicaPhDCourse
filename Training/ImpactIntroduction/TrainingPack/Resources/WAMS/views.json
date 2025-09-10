@@ -1,0 +1,57 @@
+{
+  "version": "1",
+  "models": [
+    {
+      "name": "TrainingPack.Day1.W2.HeatingSystem.Components.Pump",
+      "views": [
+        {
+          "name": "Pump_Parameters",
+          "stickies": [
+            "p_b_nominal",
+            "N_nominal"
+          ],
+          "plots": [],
+          "stickyPositions": []
+        },
+        {
+          "name": "Pump_Variables",
+          "stickies": [
+            "m_flow",
+            "N",
+            "eta"
+          ],
+          "plots": [],
+          "stickyPositions": []
+        }
+      ]
+    },
+    {
+      "name": "TrainingPack.Day1.W2.HeatingSystem.Components.Valve",
+      "views": [
+        {
+          "name": "Valve_Parameters",
+          "stickies": [
+            "dp_nominal",
+            "m_flow_nominal"
+          ],
+          "plots": [],
+          "stickyPositions": []
+        }
+      ]
+    },
+    {
+      "name": "TrainingPack.Day1.W2.HeatingSystem.Components.Tank",
+      "views": [
+        {
+          "name": "Tank_Parameters",
+          "stickies": [
+            "height",
+            "level_start"
+          ],
+          "plots": [],
+          "stickyPositions": []
+        }
+      ]
+    }
+  ]
+}
